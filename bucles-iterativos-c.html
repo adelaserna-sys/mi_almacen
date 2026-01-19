@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bucles Iterativos en C</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f5f5f5;
+            border-bottom: 3px solid #667eea;
+            overflow-x: auto;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            background: #e0e0e0;
+            border: none;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s;
+            min-width: 120px;
+        }
+
+        .tab:hover {
+            background: #d0d0d0;
+        }
+
+        .tab.active {
+            background: white;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            color: #1e3c72;
+            margin-bottom: 15px;
+            font-size: 1.8em;
+        }
+
+        h3 {
+            color: #2a5298;
+            margin: 20px 0 10px 0;
+            font-size: 1.3em;
+        }
+
+        .code-block {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+        }
+
+        .keyword { color: #569cd6; }
+        .function { color: #dcdcaa; }
+        .string { color: #ce9178; }
+        .comment { color: #6a9955; }
+        .number { color: #b5cea8; }
+
+        .interactive-demo {
+            background: #f9f9f9;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 15px 0;
+        }
+
+        input[type="number"] {
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            width: 150px;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .output {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 15px;
+            min-height: 50px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .explanation {
+            background: #e8f4fd;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .comparison-table th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .comparison-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .comparison-table tr:hover {
+            background: #f5f5f5;
+        }
+
+        .step {
+            background: white;
+            border: 2px solid #4CAF50;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 5px 0;
+            transition: all 0.3s;
+        }
+
+        .step.active {
+            background: #4CAF50;
+            color: white;
+            transform: scale(1.02);
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .tab {
+                font-size: 0.9em;
+                padding: 15px 10px;
+            }
+
+            .content {
+                padding: 15px;
+            }
+
+            input[type="number"] {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔄 Bucles Iterativos en C</h1>
+            <p>Aprende los tres tipos de bucles con ejemplos interactivos</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('while')">while</button>
+            <button class="tab" onclick="showTab('dowhile')">do-while</button>
+            <button class="tab" onclick="showTab('for')">for</button>
+            <button class="tab" onclick="showTab('comparacion')">Comparación</button>
+        </div>
+
+        <div class="content">
+            <!-- TAB WHILE -->
+            <div id="while" class="tab-content active">
+                <div class="section">
+                    <h2>Bucle while</h2>
+                    <p>El bucle <strong>while</strong> repite un bloque de código mientras una condición sea verdadera. La condición se evalúa ANTES de cada iteración.</p>
+
+                    <h3>Sintaxis:</h3>
+                    <div class="code-block">
+<span class="keyword">while</span> (condición) {
+    <span class="comment">// código a repetir</span>
+}</div>
+
+                    <h3>Ejemplo:</h3>
+                    <div class="code-block">
+<span class="keyword">int</span> i = <span class="number">1</span>;
+<span class="keyword">while</span> (i <= <span class="number">5</span>) {
+    <span class="function">printf</span>(<span class="string">"Iteración %d\n"</span>, i);
+    i++;
+}</div>
+
+                    <div class="interactive-demo">
+                        <h3>🎮 Demostración Interactiva</h3>
+                        <p>Cuenta desde un número inicial hasta un número final:</p>
+                        <div class="controls">
+                            <input type="number" id="while-inicio" value="1" placeholder="Inicio">
+                            <input type="number" id="while-fin" value="10" placeholder="Fin">
+                            <button onclick="ejecutarWhile()">▶ Ejecutar</button>
+                        </div>
+                        <div id="while-output" class="output"></div>
+                    </div>
+
+                    <div class="explanation">
+                        <strong>💡 Cómo funciona:</strong> El bucle while primero verifica si la condición es verdadera. Si lo es, ejecuta el código dentro del bucle. Si no, salta el bucle completamente. Esto significa que el código puede no ejecutarse nunca si la condición es falsa desde el principio.
+                    </div>
+
+                    <div class="warning">
+                        <strong>⚠️ Cuidado con bucles infinitos:</strong> Si olvidas actualizar la variable de control (como i++), el bucle nunca terminará y tu programa se quedará atascado.
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB DO-WHILE -->
+            <div id="dowhile" class="tab-content">
+                <div class="section">
+                    <h2>Bucle do-while</h2>
+                    <p>El bucle <strong>do-while</strong> es similar al while, pero garantiza que el código se ejecute AL MENOS UNA VEZ, ya que la condición se evalúa DESPUÉS de cada iteración.</p>
+
+                    <h3>Sintaxis:</h3>
+                    <div class="code-block">
+<span class="keyword">do</span> {
+    <span class="comment">// código a repetir</span>
+} <span class="keyword">while</span> (condición);</div>
+
+                    <h3>Ejemplo:</h3>
+                    <div class="code-block">
+<span class="keyword">int</span> opcion;
+<span class="keyword">do</span> {
+    <span class="function">printf</span>(<span class="string">"1. Opción A\n2. Opción B\n3. Salir\n"</span>);
+    <span class="function">scanf</span>(<span class="string">"%d"</span>, &opcion);
+} <span class="keyword">while</span> (opcion != <span class="number">3</span>);</div>
+
+                    <div class="interactive-demo">
+                        <h3>🎮 Demostración Interactiva</h3>
+                        <p>Simula un menú que se repite hasta que el usuario elija salir:</p>
+                        <div class="controls">
+                            <button onclick="ejecutarDoWhile()">▶ Iniciar Menú</button>
+                        </div>
+                        <div id="dowhile-output" class="output"></div>
+                    </div>
+
+                    <div class="explanation">
+                        <strong>💡 Diferencia clave:</strong> La principal diferencia con while es que do-while SIEMPRE ejecuta el código al menos una vez, incluso si la condición es falsa desde el principio. Esto lo hace ideal para menús y validaciones de entrada.
+                    </div>
+
+                    <h3>Comparación visual:</h3>
+                    <div class="code-block">
+<span class="comment">// while: puede no ejecutarse nunca</span>
+<span class="keyword">int</span> x = <span class="number">10</span>;
+<span class="keyword">while</span> (x < <span class="number">5</span>) {
+    <span class="function">printf</span>(<span class="string">"Esto NO se imprime"</span>);
+}
+
+<span class="comment">// do-while: se ejecuta al menos una vez</span>
+<span class="keyword">int</span> y = <span class="number">10</span>;
+<span class="keyword">do</span> {
+    <span class="function">printf</span>(<span class="string">"Esto SÍ se imprime"</span>);
+} <span class="keyword">while</span> (y < <span class="number">5</span>);</div>
+                </div>
+            </div>
+
+            <!-- TAB FOR -->
+            <div id="for" class="tab-content">
+                <div class="section">
+                    <h2>Bucle for</h2>
+                    <p>El bucle <strong>for</strong> es el más compacto y se usa cuando sabes exactamente cuántas veces quieres repetir algo. Combina inicialización, condición e incremento en una sola línea.</p>
+
+                    <h3>Sintaxis:</h3>
+                    <div class="code-block">
+<span class="keyword">for</span> (inicialización; condición; incremento) {
+    <span class="comment">// código a repetir</span>
+}</div>
+
+                    <h3>Ejemplo:</h3>
+                    <div class="code-block">
+<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < <span class="number">10</span>; i++) {
+    <span class="function">printf</span>(<span class="string">"i = %d\n"</span>, i);
+}</div>
+
+                    <div class="interactive-demo">
+                        <h3>🎮 Demostración Interactiva: Tabla de Multiplicar</h3>
+                        <div class="controls">
+                            <input type="number" id="for-numero" value="5" placeholder="Número" min="1" max="20">
+                            <button onclick="ejecutarFor()">▶ Generar Tabla</button>
+                        </div>
+                        <div id="for-output" class="output"></div>
+                    </div>
+
+                    <div class="explanation">
+                        <strong>💡 Las tres partes del for:</strong>
+                        <ul style="margin-top: 10px; margin-left: 20px;">
+                            <li><strong>Inicialización:</strong> Se ejecuta UNA SOLA VEZ al principio (ej: int i = 0)</li>
+                            <li><strong>Condición:</strong> Se verifica ANTES de cada iteración (ej: i < 10)</li>
+                            <li><strong>Incremento:</strong> Se ejecuta DESPUÉS de cada iteración (ej: i++)</li>
+                        </ul>
+                    </div>
+
+                    <h3>Variaciones comunes:</h3>
+                    <div class="code-block">
+<span class="comment">// Contar hacia atrás</span>
+<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">10</span>; i >= <span class="number">0</span>; i--) {
+    <span class="function">printf</span>(<span class="string">"%d "</span>, i);
+}
+
+<span class="comment">// Incrementar de 2 en 2</span>
+<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i <= <span class="number">20</span>; i += <span class="number">2</span>) {
+    <span class="function">printf</span>(<span class="string">"%d "</span>, i);
+}
+
+<span class="comment">// Bucles anidados (tablas)</span>
+<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i <= <span class="number">3</span>; i++) {
+    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">1</span>; j <= <span class="number">3</span>; j++) {
+        <span class="function">printf</span>(<span class="string">"(%d,%d) "</span>, i, j);
+    }
+    <span class="function">printf</span>(<span class="string">"\n"</span>);
+}</div>
+
+                    <div class="interactive-demo">
+                        <h3>🎮 Bucles Anidados: Patrón de Asteriscos</h3>
+                        <div class="controls">
+                            <input type="number" id="for-filas" value="5" placeholder="Filas" min="1" max="10">
+                            <button onclick="ejecutarForAnidado()">▶ Generar Patrón</button>
+                        </div>
+                        <div id="for-anidado-output" class="output"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB COMPARACION -->
+            <div id="comparacion" class="tab-content">
+                <div class="section">
+                    <h2>Comparación de Bucles</h2>
+                    
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Característica</th>
+                                <th>while</th>
+                                <th>do-while</th>
+                                <th>for</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>¿Cuándo verifica la condición?</strong></td>
+                                <td>Antes de ejecutar</td>
+                                <td>Después de ejecutar</td>
+                                <td>Antes de ejecutar</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Ejecuciones mínimas</strong></td>
+                                <td>0 veces</td>
+                                <td>1 vez (mínimo)</td>
+                                <td>0 veces</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Mejor uso</strong></td>
+                                <td>Cuando no sabes cuántas veces repetir</td>
+                                <td>Menús y validaciones</td>
+                                <td>Cuando sabes el número de iteraciones</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Complejidad de sintaxis</strong></td>
+                                <td>Simple</td>
+                                <td>Simple</td>
+                                <td>Compacta</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>El mismo programa con los tres bucles:</h3>
+                    <p><strong>Objetivo:</strong> Imprimir números del 1 al 5</p>
+
+                    <div class="code-block">
+<span class="comment">// Versión con while</span>
+<span class="keyword">int</span> i = <span class="number">1</span>;
+<span class="keyword">while</span> (i <= <span class="number">5</span>) {
+    <span class="function">printf</span>(<span class="string">"%d "</span>, i);
+    i++;
+}
+
+<span class="comment">// Versión con do-while</span>
+<span class="keyword">int</span> j = <span class="number">1</span>;
+<span class="keyword">do</span> {
+    <span class="function">printf</span>(<span class="string">"%d "</span>, j);
+    j++;
+} <span class="keyword">while</span> (j <= <span class="number">5</span>);
+
+<span class="comment">// Versión con for (¡la más compacta!)</span>
+<span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">1</span>; k <= <span class="number">5</span>; k++) {
+    <span class="function">printf</span>(<span class="string">"%d "</span>, k);
+}</div>
+
+                    <div class="explanation">
+                        <strong>💡 ¿Cuál usar?</strong>
+                        <ul style="margin-top: 10px; margin-left: 20px;">
+                            <li><strong>for:</strong> Cuando conoces el número exacto de iteraciones (recorrer arrays, tablas de multiplicar)</li>
+                            <li><strong>while:</strong> Cuando la condición de parada depende de algo que no puedes predecir (leer archivo hasta el final)</li>
+                            <li><strong>do-while:</strong> Cuando NECESITAS ejecutar el código al menos una vez (menús interactivos, validación de entrada)</li>
+                        </ul>
+                    </div>
+
+                    <div class="interactive-demo">
+                        <h3>🎮 Ejercicio Práctico: Suma de Números</h3>
+                        <p>Calcula la suma de números del 1 al N usando diferentes bucles:</p>
+                        <div class="controls">
+                            <input type="number" id="comp-numero" value="10" placeholder="Número final" min="1">
+                            <button onclick="compararBucles()">▶ Comparar</button>
+                        </div>
+                        <div id="comp-output" class="output"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            const tabs = document.querySelectorAll('.tab');
+            const contents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => tab.classList.remove('active'));
+            contents.forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        function ejecutarWhile() {
+            const inicio = parseInt(document.getElementById('while-inicio').value);
+            const fin = parseInt(document.getElementById('while-fin').value);
+            const output = document.getElementById('while-output');
+            
+            let resultado = '<strong>Ejecución del bucle while:</strong><br><br>';
+            let i = inicio;
+            let pasos = 0;
+            
+            while (i <= fin && pasos < 50) {
+                resultado += `Iteración ${pasos + 1}: i = ${i}<br>`;
+                i++;
+                pasos++;
+            }
+            
+            if (pasos >= 50) {
+                resultado += '<br><span style="color: red;">⚠️ Límite de 50 iteraciones alcanzado</span>';
+            }
+            
+            resultado += `<br><strong>Total de iteraciones: ${pasos}</strong>`;
+            output.innerHTML = resultado;
+        }
+
+        let menuStep = 0;
+        function ejecutarDoWhile() {
+            const output = document.getElementById('dowhile-output');
+            
+            if (menuStep === 0) {
+                output.innerHTML = `
+                    <strong>Simulación de menú do-while:</strong><br><br>
+                    <strong>MENÚ:</strong><br>
+                    1. Ver perfil<br>
+                    2. Configuración<br>
+                    3. Salir<br><br>
+                    <div class="controls">
+                        <button onclick="elegirOpcion(1)">Opción 1</button>
+                        <button onclick="elegirOpcion(2)">Opción 2</button>
+                        <button onclick="elegirOpcion(3)">Opción 3 (Salir)</button>
+                    </div>
+                    <div id="menu-resultado"></div>
+                `;
+                menuStep = 1;
+            }
+        }
+
+        function elegirOpcion(opcion) {
+            const resultado = document.getElementById('menu-resultado');
+            let mensaje = '';
+            
+            if (opcion === 1) {
+                mensaje = '<br>✓ Mostrando perfil...<br><br>El bucle continúa porque la opción no fue 3.';
+                setTimeout(() => ejecutarDoWhile(), 2000);
+            } else if (opcion === 2) {
+                mensaje = '<br>✓ Abriendo configuración...<br><br>El bucle continúa porque la opción no fue 3.';
+                setTimeout(() => ejecutarDoWhile(), 2000);
+            } else if (opcion === 3) {
+                mensaje = '<br>✓ Saliendo del programa...<br><br><strong>El bucle termina porque opcion == 3</strong>';
+                menuStep = 0;
+            }
+            
+            resultado.innerHTML = mensaje;
+        }
+
+        function ejecutarFor() {
+            const numero = parseInt(document.getElementById('for-numero').value);
+            const output = document.getElementById('for-output');
+            
+            let resultado = `<strong>Tabla de multiplicar del ${numero}:</strong><br><br>`;
+            
+            for (let i = 1; i <= 10; i++) {
+                resultado += `${numero} × ${i} = ${numero * i}<br>`;
+            }
+            
+            output.innerHTML = resultado;
+        }
+
+        function ejecutarForAnidado() {
+            const filas = parseInt(document.getElementById('for-filas').value);
+            const output = document.getElementById('for-anidado-output');
+            
+            let resultado = '<strong>Patrón generado con bucles anidados:</strong><br><br>';
+            resultado += '<div style="font-family: monospace; line-height: 1.4;">';
+            
+            for (let i = 1; i <= filas; i++) {
+                for (let j = 1; j <= i; j++) {
+                    resultado += '★ ';
+                }
+                resultado += '<br>';
+            }
+            
+            resultado += '</div>';
+            output.innerHTML = resultado;
+        }
+
+        function compararBucles() {
+            const n = parseInt(document.getElementById('comp-numero').value);
+            const output = document.getElementById('comp-output');
+            
+            let suma1 = 0, suma2 = 0, suma3 = 0;
+            
+            // Versión while
+            let i = 1;
+            while (i <= n) {
+                suma1 += i;
+                i++;
+            }
+            
+            // Versión do-while
+            let j = 1;
+            do {
+                suma2 += j;
+                j++;
+            } while (j <= n);
+            
+            // Versión for
+            for (let k = 1; k <= n; k++) {
+                suma3 += k;
+            }
+            
+            let resultado = `
+                <strong>Suma de números del 1 al ${n}:</strong><br><br>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                    <div style="background: #e3f2fd; padding: 15px; border-radius: 5px;">
+                        <strong>while:</strong><br>
+                        Resultado = ${suma1}
+                    </div>
+                    <div style="background: #f3e5f5; padding: 15px; border-radius: 5px;">
+                        <strong>do-while:</strong><br>
+                        Resultado = ${suma2}
+                    </div>
+                    <div style="background: #e8f5e9; padding: 15px; border-radius: 5px;">
+                        <strong>for:</strong><br>
+                        Resultado = ${suma3}
+                    </div>
+                </div>
+                <br><strong>✓ Los tres bucles producen el mismo resultado!</strong>
+            `;
+            
+            output.innerHTML = resultado;
+        }
+    </script>
+</body>
+</html>
